@@ -18,8 +18,11 @@ if settings.database_url.startswith("sqlite"):
     @event.listens_for(engine, "connect")
     def set_sqlite_pragma(dbapi_connection, connection_record):
         cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA journal_mode=WAL")
+        # Use DELETE journal mode instead of WAL —
+        # WAL is incompatible with OneDrive / network file systems.
+        cursor.execute("PRAGMA journal_mode=DELETE")
         cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.execute("PRAGMA synchronous=NORMAL")
         cursor.close()
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

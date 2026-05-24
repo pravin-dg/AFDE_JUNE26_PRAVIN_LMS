@@ -8,6 +8,9 @@ import Borrowers from './pages/Borrowers'
 import BorrowReturn from './pages/BorrowReturn'
 import Transactions from './pages/Transactions'
 import Search from './pages/Search'
+import Analytics from './pages/Analytics'
+import ETLManager from './pages/ETLManager'
+import Reports from './pages/Reports'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -26,6 +29,9 @@ export default function App() {
           <Route path="borrow-return" element={<BorrowReturn />} />
           <Route path="transactions" element={<Transactions />} />
           <Route path="search" element={<Search />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="etl-manager" element={<ETLManager />} />
+          <Route path="reports" element={<Reports />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

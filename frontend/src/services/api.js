@@ -41,7 +41,9 @@ export const transactionsApi = {
   returnBook: (d) => api.post('/return', d),
 }
 
-export const searchApi = { search: (q, p = {}) => api.get('/search', { params: { q, ...p } }) }
+export const searchApi = {
+  search: (q, p = {}) => api.get('/search', { params: { q, ...p } }),
+}
 
 export const dashboardApi = {
   getStats: () => api.get('/dashboard/stats'),
@@ -49,4 +51,25 @@ export const dashboardApi = {
   getRecentBooks: () => api.get('/dashboard/recent-books'),
 }
 
-export default api
+export const analyticsApi = {
+  popularBooks: (limit = 10, category = null) =>
+    api.get('/analytics/popular-books', { params: { limit, ...(category ? { category } : {}) } }),
+  monthlyTrends: (limit = 24) =>
+    api.get('/analytics/monthly-trends', { params: { limit } }),
+  categoryTrends: () => api.get('/analytics/category-trends'),
+  overdueAnalysis: (limit = 50) =>
+    api.get('/analytics/overdue-analysis', { params: { limit } }),
+  dashboardSummary: () => api.get('/analytics/dashboard-summary'),
+  exportPopularBooks: () => `${BASE}/analytics/export/popular-books`,
+  exportMonthlyTrends: () => `${BASE}/analytics/export/monthly-trends`,
+  exportOverdue: () => `${BASE}/analytics/export/overdue`,
+  exportCategories: () => `${BASE}/analytics/export/categories`,
+}
+
+export const etlApi = {
+  upload: (formData, datasetType) =>
+    api.post(`/etl/upload?dataset_type=${datasetType}`, formData),
+  runSync: () => api.post('/etl/run'),
+  getStatus: (jobId) => api.get(`/etl/status/${jobId}`),
+  getLogs: (limit = 20) => api.get('/etl/logs', { params: { limit } }),
+}

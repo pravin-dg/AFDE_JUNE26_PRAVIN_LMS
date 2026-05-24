@@ -2,24 +2,32 @@
 
 > A production-quality, full-stack library management platform built with **FastAPI + React**. Designed to look and feel like a premium SaaS product, not a college CRUD project.
 
-![Tech Stack](https://img.shields.io/badge/FastAPI-0.111-green?style=flat-square) ![React](https://img.shields.io/badge/React-18.2-blue?style=flat-square) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-cyan?style=flat-square) ![SQLite](https://img.shields.io/badge/SQLite-3-orange?style=flat-square)
+![Tech Stack](https://img.shields.io/badge/FastAPI-0.111-green?style=flat-square) ![React](https://img.shields.io/badge/React-18.2-blue?style=flat-square) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-cyan?style=flat-square) ![SQLite](https://img.shields.io/badge/SQLite-3-orange?style=flat-square) ![Pandas](https://img.shields.io/badge/Pandas-2.2-purple?style=flat-square) ![Phase](https://img.shields.io/badge/Phase-2%20Complete-brightgreen?style=flat-square)
 
 ---
 
 ## ✨ Features
 
-### Core
+### Phase 1 — Core Library Management
 - **Book Management** — Full CRUD with grid/list views, cover color coding, category filtering, ISBN validation
 - **Borrower Management** — Member profiles with avatar initials, active borrow tracking
 - **Borrow & Return Workflow** — Visual book/borrower selection, duplicate borrow prevention, automatic availability updates
 - **Transaction History** — Filterable timeline with active/returned status, date tracking
 - **Global Search** — Real-time debounced search across books and borrowers
-- **Analytics Dashboard** — Stats cards, area charts, pie charts, recent activity feeds
+- **Dashboard** — Stats cards, area charts, pie charts, recent activity feeds
+
+### Phase 2 — ETL Pipeline & Analytics
+- **ETL Pipeline** — Upload CSV datasets or sync from live DB; extract → validate → transform → load in one click
+- **Analytics Dashboard** — KPI cards, monthly borrowing trends, popular books leaderboard, category distribution, overdue analysis
+- **Reports Page** — Sortable/paginated tables for all analytics datasets with one-click CSV export
+- **ETL Manager** — Drag-and-drop CSV upload, dataset type selection, job log viewer with auto-refresh
+- **5 analytics tables** rebuilt automatically after every ETL run (popular books, monthly trends, category summary, overdue summary, job logs)
+- **475 seed records** — 153 books, 62 borrowers, 260 transactions across 3 importable CSV datasets
 
 ### UI/UX
 - Warm beige/brown/navy library-themed palette
 - Glassmorphism cards and smooth Framer Motion animations
-- Animated collapsible sidebar with tooltip labels
+- Animated collapsible sidebar with tooltip labels and "Analytics" section group
 - Book cover placeholders with unique color coding per genre
 - Loading skeletons for every data-loading state
 - Empty state illustrations
@@ -28,13 +36,16 @@
 - Playfair Display headings + Inter body font
 
 ### Technical
-- Modular FastAPI architecture (routers / crud / schemas / models / config)
+- Modular FastAPI architecture (routers / crud / schemas / models / etl / analytics / config)
 - SQLAlchemy ORM with SQLite (WAL mode, FK enforcement)
 - PostgreSQL-ready architecture — swap `DATABASE_URL` in `.env`
 - Pydantic v2 validation with custom error messages
+- Pandas ETL pipeline with field normalization, deduplication, and derived metric computation
+- UUID-based ETL job tracking with structured log capture
 - Axios API service layer with interceptors
 - Custom React hooks (`useBooks`, `useBorrowers`, `useDebounce`)
 - Paginated API endpoints with sorting + filtering
+- CSV export via FastAPI `StreamingResponse`
 
 ---
 
@@ -50,6 +61,8 @@
 | ORM | SQLAlchemy 2.0 |
 | Validation | Pydantic v2 |
 | Database | SQLite (PostgreSQL-ready) |
+| ETL | Pandas 2.2, NumPy 1.26 |
+| File I/O | python-multipart, aiofiles, openpyxl |
 
 ---
 
@@ -109,6 +122,9 @@ Library Management/
     │   │   ├── BorrowReturn.jsx  # Borrow/return workflow
     │   │   ├── Transactions.jsx  # Transaction history
     │   │   ├── Search.jsx        # Global search
+    │   │   ├── Analytics.jsx     # [Phase 2] Analytics dashboard
+    │   │   ├── ETLManager.jsx    # [Phase 2] ETL pipeline manager
+    │   │   ├── Reports.jsx       # [Phase 2] Tabular reports + CSV export
     │   │   └── NotFound.jsx      # 404 page
     │   ├── hooks/
     │   │   ├── useBooks.js
@@ -176,6 +192,36 @@ npm run dev
 
 Frontend will be running at: **http://localhost:5173**
 
+### 3. Import Phase 2 Datasets (Optional)
+
+After the backend is running, import the pre-built CSV datasets through the ETL Manager UI or via curl:
+
+```bash
+# Option A: Use the ETL Manager UI
+# Navigate to http://localhost:5173/etl-manager
+# Upload each CSV from backend/datasets/ with the correct dataset type
+
+# Option B: Run DB sync (rebuilds analytics from existing data)
+curl -X POST http://localhost:8000/api/v1/etl/run
+
+# Option C: Upload via curl
+curl -X POST "http://localhost:8000/api/v1/etl/upload?dataset_type=books" \
+  -F "file=@backend/datasets/books_dataset.csv"
+
+curl -X POST "http://localhost:8000/api/v1/etl/upload?dataset_type=borrowers" \
+  -F "file=@backend/datasets/borrowers_dataset.csv"
+
+curl -X POST "http://localhost:8000/api/v1/etl/upload?dataset_type=transactions" \
+  -F "file=@backend/datasets/transactions_dataset.csv"
+```
+
+The datasets contain:
+- **`books_dataset.csv`** — 153 books across 20+ categories with publisher, year, description, ISBN
+- **`borrowers_dataset.csv`** — 62 borrowers with email, phone, address
+- **`transactions_dataset.csv`** — 260 transactions (75% returned, 25% active, realistic overdue patterns)
+
+After import, visit `/analytics` to see the populated dashboard.
+
 ---
 
 ## 🔌 API Reference
@@ -231,6 +277,27 @@ Frontend will be running at: **http://localhost:5173**
 | `sort_by` | string | Sort field (default: book_id) |
 | `sort_order` | string | `asc` or `desc` (default: desc) |
 
+### ETL Pipeline (Phase 2)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/etl/upload?dataset_type={type}` | Upload CSV file (books/borrowers/transactions) |
+| POST | `/api/v1/etl/run` | Run DB sync pipeline (rebuild analytics from live data) |
+| GET | `/api/v1/etl/status/{job_id}` | Get ETL job status by UUID |
+| GET | `/api/v1/etl/logs` | List recent ETL job logs |
+
+### Analytics (Phase 2)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/analytics/dashboard-summary` | KPI aggregates + top books + monthly trends |
+| GET | `/api/v1/analytics/popular-books` | Books ranked by total borrows |
+| GET | `/api/v1/analytics/monthly-trends` | Monthly borrow/return/overdue counts |
+| GET | `/api/v1/analytics/category-trends` | Per-category book and borrow stats |
+| GET | `/api/v1/analytics/overdue-analysis` | Overdue stats + top offenders |
+| GET | `/api/v1/analytics/export/popular-books` | CSV download — popular books |
+| GET | `/api/v1/analytics/export/monthly-trends` | CSV download — monthly trends |
+| GET | `/api/v1/analytics/export/overdue` | CSV download — overdue transactions |
+| GET | `/api/v1/analytics/export/categories` | CSV download — category summary |
+
 ---
 
 ## 🗄 Database Schema
@@ -276,6 +343,96 @@ CREATE TABLE transactions (
 );
 ```
 
+### Analytics Tables (Phase 2 — auto-rebuilt by ETL)
+
+```sql
+-- Popular books summary (rebuilt after every ETL run)
+CREATE TABLE analytics_popular_books (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    book_id INTEGER, title VARCHAR(255), author VARCHAR(255), category VARCHAR(100),
+    total_borrows INTEGER DEFAULT 0, total_returns INTEGER DEFAULT 0,
+    active_borrows INTEGER DEFAULT 0, avg_borrow_days FLOAT DEFAULT 0.0,
+    rank INTEGER, last_borrowed_at DATETIME, updated_at DATETIME
+);
+
+-- Monthly borrowing trends
+CREATE TABLE analytics_monthly_trends (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    year INTEGER, month INTEGER, month_label VARCHAR(20),
+    total_borrows INTEGER DEFAULT 0, total_returns INTEGER DEFAULT 0,
+    active_borrows INTEGER DEFAULT 0, overdue_count INTEGER DEFAULT 0,
+    unique_borrowers INTEGER DEFAULT 0, unique_books INTEGER DEFAULT 0,
+    updated_at DATETIME
+);
+
+-- Category-level summary
+CREATE TABLE analytics_category_summary (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category VARCHAR(100) UNIQUE, total_books INTEGER DEFAULT 0,
+    available_books INTEGER DEFAULT 0, borrowed_books INTEGER DEFAULT 0,
+    total_borrows INTEGER DEFAULT 0, borrow_percentage FLOAT DEFAULT 0.0,
+    updated_at DATETIME
+);
+
+-- Overdue transaction tracking
+CREATE TABLE analytics_overdue_summary (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    transaction_id INTEGER UNIQUE, book_id INTEGER, borrower_id INTEGER,
+    overdue_days FLOAT DEFAULT 0.0, status VARCHAR(50), updated_at DATETIME
+);
+
+-- ETL job audit log
+CREATE TABLE etl_job_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id VARCHAR(36) UNIQUE, job_type VARCHAR(50), status VARCHAR(20),
+    records_extracted INTEGER DEFAULT 0, records_transformed INTEGER DEFAULT 0,
+    records_loaded INTEGER DEFAULT 0, records_skipped INTEGER DEFAULT 0,
+    records_failed INTEGER DEFAULT 0, log_output TEXT,
+    duration_seconds FLOAT, created_at DATETIME, updated_at DATETIME
+);
+```
+
+---
+
+## 🔄 ETL Architecture (Phase 2)
+
+```
+CSV Upload / DB Sync
+        │
+        ▼
+┌─────────────────┐
+│    Extract      │  → Read CSV bytes or query live DB tables
+│  (extract.py)   │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│   Transform     │  → Normalize columns, validate, deduplicate
+│ (transform.py)  │  → Compute derived fields:
+└────────┬────────┘    - borrowing_month / borrowing_year
+         │             - overdue_days (julianday arithmetic)
+         ▼             - transaction_status (active/overdue/returned_on_time/returned_late)
+┌─────────────────┐
+│     Load        │  → Upsert books (by ISBN), borrowers (by email)
+│   (load.py)     │  → Rebuild all 4 analytics tables from scratch
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│   Job Log       │  → UUID job_id, status, record counts, duration, captured logs
+│ (EtlJobLog)     │
+└─────────────────┘
+```
+
+**Transform derived fields:**
+
+| Field | Source | Logic |
+|-------|--------|-------|
+| `borrowing_month` | `borrow_date` | `.dt.month` |
+| `borrowing_year` | `borrow_date` | `.dt.year` |
+| `overdue_days` | `due_date`, `return_date` | `(ref_date - effective_due).days.clip(lower=0)` |
+| `transaction_status` | `is_returned`, `overdue_days` | `active` / `overdue` / `returned_on_time` / `returned_late` |
+
 ---
 
 ## 🎨 Sample Data
@@ -286,6 +443,11 @@ Running `python seed.py` will populate the database with:
 - **5 active borrowings** with various borrow dates
 - **3 completed returns** for transaction history
 
+**Phase 2 datasets** (in `backend/datasets/`):
+- **`books_dataset.csv`** — 153 books, 20+ categories, full metadata
+- **`borrowers_dataset.csv`** — 62 borrowers with realistic profiles
+- **`transactions_dataset.csv`** — 260 transactions, 75% returned, 25% active, varied overdue patterns
+
 ---
 
 ## 🔮 Future Enhancements
@@ -293,7 +455,6 @@ Running `python seed.py` will populate the database with:
 - [ ] Dark mode toggle
 - [ ] AI-powered semantic book search (vector embeddings)
 - [ ] Book recommendation engine
-- [ ] CSV/Excel export of transactions
 - [ ] Email notifications for due dates
 - [ ] Barcode/ISBN scanning
 - [ ] Fine tracking for overdue books
