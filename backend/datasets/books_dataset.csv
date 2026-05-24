@@ -1,0 +1,31 @@
+title,author,category,isbn,publisher,published_year,description,availability_status,cover_color
+The Pragmatic Programmer,David Thomas,Technology,978-0135957059,Addison-Wesley,2019,Your journey to mastery,True,#1E3A5F
+Clean Code,Robert C. Martin,Technology,978-0132350884,Prentice Hall,2008,A handbook of agile software craftsmanship,True,#2D6A4F
+Dune,Frank Herbert,Science Fiction,978-0441013593,Ace Books,1965,Epic sci-fi saga of politics and survival,True,#8B4513
+The Hitchhiker's Guide to the Galaxy,Douglas Adams,Science Fiction,978-0345391803,Del Rey,1979,"The answer to life, the universe, and everything",True,#4B0082
+Atomic Habits,James Clear,Self-Help,978-0735211292,Avery,2018,"Tiny changes, remarkable results",True,#FF6B35
+The Great Gatsby,F. Scott Fitzgerald,Fiction,978-0743273565,Scribner,1925,The American dream in the Jazz Age,True,#DAA520
+To Kill a Mockingbird,Harper Lee,Fiction,978-0061935466,Harper Perennial,1960,A story of racial injustice and moral growth,True,#8B0000
+"Thinking, Fast and Slow",Daniel Kahneman,Psychology,978-0374533557,Farrar Straus,2011,Two systems that drive the way we think,True,#2C3E50
+Sapiens,Yuval Noah Harari,History,978-0062316097,Harper,2015,A brief history of humankind,True,#1A472A
+The Lean Startup,Eric Ries,Business,978-0307887894,Crown Business,2011,How today's entrepreneurs use continuous innovation,True,#E74C3C
+1984,George Orwell,Fiction,978-0451524935,Signet Classic,1949,A dystopian novel about totalitarianism,True,#2C2C2C
+Design Patterns,Gang of Four,Technology,978-0201633610,Addison-Wesley,1994,Elements of reusable object-oriented software,True,#34495E
+The Alchemist,Paulo Coelho,Fiction,978-0062315007,HarperOne,1988,A philosophical novel about following your dreams,True,#F39C12
+Deep Work,Cal Newport,Self-Help,978-1455586691,Grand Central,2016,Rules for focused success in a distracted world,True,#2980B9
+Educated,Tara Westover,Biography,978-0399590504,Random House,2018,A memoir about education and family,True,#8E44AD
+The Psychology of Money,Morgan Housel,Business,978-0857197689,Harriman House,2020,Timeless lessons on wealth and greed,True,#27AE60
+Ender's Game,Orson Scott Card,Science Fiction,978-0812550702,Tor Books,1985,A child prodigy trained for interstellar war,True,#16A085
+The 7 Habits of Highly Effective People,Stephen Covey,Self-Help,978-1982137274,Simon & Schuster,1989,Powerful lessons in personal change,True,#C0392B
+Brave New World,Aldous Huxley,Science Fiction,978-0060850524,Harper Perennial,1932,A dystopian vision of the future,True,#7F8C8D
+Meditations,Marcus Aurelius,Philosophy,978-0140449334,Penguin Classics,161,Personal writings of the Roman emperor,True,#BDC3C7
+The Art of War,Sun Tzu,Philosophy,978-1590302255,Shambhala,-500,Ancient Chinese military strategy,True,#E8D5B7
+Zero to One,Peter Thiel,Business,978-0804139021,Crown Business,2014,Notes on startups and how to build the future,True,#3498DB
+Quiet,Susan Cain,Psychology,978-0307352149,Crown,2012,The power of introverts in a world that can't stop talking,True,#9B59B6
+The Martian,Andy Weir,Science Fiction,978-0553418026,Broadway Books,2011,An astronaut's fight to survive on Mars,True,#E74C3C
+Thinking in Systems,Donella Meadows,Technology,978-1603580557,Chelsea Green,2008,A primer on systems thinking,True,#1ABC9C
+Start with Why,Simon Sinek,Business,978-1591846444,Portfolio,2009,How great leaders inspire everyone to take action,True,#F1C40F
+The Name of the Wind,Patrick Rothfuss,Fantasy,978-0756404741,DAW Books,2007,The tale of a legendary figure's early life,True,#6C3483
+A Brief History of Time,Stephen Hawking,Science,978-0553380163,Bantam Books,1988,From the big bang to black holes,True,#1F618D
+The Midnight Library,Matt Haig,Fiction,978-0525559474,Viking,2020,Between life and death there is a library,True,#85929E
+Rich Dad Poor Dad,Robert Kiyosaki,Business,978-1612680194,Plata Publishing,1997,What the rich teach their kids about money,True,#D4AC0D
